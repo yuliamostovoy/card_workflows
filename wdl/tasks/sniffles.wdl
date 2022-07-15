@@ -3,6 +3,7 @@ version 1.0
 task sniffles_t {
   input {
 	File bamAlignment
+	File bamAlignmentIndex
     File reference
     Int threads = 8
 	Int memSizeGb = 128
@@ -30,11 +31,15 @@ task sniffles_t {
         gunzip $REF -c > ref.fa
         REF=ref.fa
     fi
-    ## index reference and bam
+    ## index reference
     samtools faidx $REF
-    samtools index -@ ~{threads} ~{bamAlignment}
+
+    ## make sure both bam and bai are "in" the same directory
+    ln -s ~{bamAlignment}
+    ln -s ~{bamAlignmentIndex}
+    BAM_FILE=$(basename ~{bamAlignment})
     
-    sniffles -i ~{bamAlignment} -v sniffles.vcf.gz --reference $REF -t ~{threads} ${TRF_STRING}
+    sniffles -i $BAM_FILE -v sniffles.vcf.gz --reference $REF -t ~{threads} ${TRF_STRING}
   >>>
 
   output {

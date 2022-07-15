@@ -5,6 +5,7 @@ task pepper_margin_dv_t {
     Int threads
     File reference
 	File bamAlignment
+	File bamAlignmentIndex
 	String mapMode = "ont"
 	Int memSizeGb = 256
 	Int diskSizeGb = 1024
@@ -25,13 +26,16 @@ task pepper_margin_dv_t {
         gunzip $REF -c > ref.fa
         REF=ref.fa
     fi
-
-    ## index reference and bam
+    ## index reference
     samtools faidx $REF
-    samtools index -@ ~{threads} ~{bamAlignment}
+
+    ## make sure both bam and bai are "in" the same directory
+    ln -s ~{bamAlignment}
+    ln -s ~{bamAlignmentIndex}
+    BAM_FILE=$(basename ~{bamAlignment})
 
     ## run PEPPER-Margin-DeepVariant
-    run_pepper_margin_deepvariant call_variant -b ~{bamAlignment} -f $REF -o `pwd` -t ~{threads} ~{pepperMode} -p PMDV_FINAL
+    run_pepper_margin_deepvariant call_variant -b $BAM_FILE -f $REF -o `pwd` -t ~{threads} ~{pepperMode} -p PMDV_FINAL
   >>>
 
   output {

@@ -28,13 +28,15 @@ workflow smallVariantsReferenceBased {
         input:
             threads=threads,
             reference=referenceFile,
-			bamAlignment=minimap2.bam
+			bamAlignment=minimap2.bam,
+			bamAlignmentIndex=minimap2.bamIndex
     }
 
 	### Sniffles
     call sniffles_t.sniffles_t as sniffles_t {
         input:
 	    bamAlignment=minimap2.bam,
+		bamAlignmentIndex=minimap2.bamIndex,
         reference=referenceFile
     }
 
