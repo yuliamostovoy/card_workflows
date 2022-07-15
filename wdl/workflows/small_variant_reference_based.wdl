@@ -34,8 +34,8 @@ workflow smallVariantsReferenceBased {
 	### Sniffles
     call sniffles_t.sniffles_t as sniffles_t {
         input:
-            threads=threads,
-			bamAlignment=minimap2.bam
+	    bamAlignment=minimap2.bam,
+        reference=referenceFile
     }
 
 	output {

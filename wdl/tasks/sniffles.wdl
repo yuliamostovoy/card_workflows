@@ -2,8 +2,9 @@ version 1.0
 
 task sniffles_t {
   input {
-    Int threads
 	File bamAlignment
+    File reference
+    Int threads = 8
 	Int memSizeGb = 128
 	Int diskSizeGb = 256
 	String trfAnnotations = ""
@@ -22,12 +23,22 @@ task sniffles_t {
     fi
     echo $TRF_STRING
 
-    samtools index -@ 10 ~{bamAlignment}
-    sniffles -i ~{bamAlignment} -v sniffles.vcf -t ~{threads} ${TRF_STRING}
+    ## unzip reference fasta is necessary
+    REF=~{reference}
+    if [[ $REF == *.gz ]]
+    then
+        gunzip $REF -c > ref.fa
+        REF=ref.fa
+    fi
+    ## index reference and bam
+    samtools faidx $REF
+    samtools index -@ ~{threads} ~{bamAlignment}
+    
+    sniffles -i ~{bamAlignment} -v sniffles.vcf.gz --reference $REF -t ~{threads} ${TRF_STRING}
   >>>
 
   output {
-	File snifflesVcf = "sniffles.vcf"
+	File snifflesVcf = "sniffles.vcf.gz"
   }
 
   runtime {
