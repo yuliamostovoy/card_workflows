@@ -18,8 +18,20 @@ task pepper_margin_dv_t {
     set -u
     set -o xtrace
 
-    samtools index -@ 10 ~{bamAlignment}
-    run_pepper_margin_deepvariant call_variant -b ~{bamAlignment} -f ~{reference} -o `pwd` -t ~{threads} ~{pepperMode} -p PMDV_FINAL
+    ## unzip reference fasta is necessary
+    REF=~{reference}
+    if [[ $REF == *.gz ]]
+    then
+        gunzip $REF -c > ref.fa
+        REF=ref.fa
+    fi
+
+    ## index reference and bam
+    samtools faidx $REF
+    samtools index -@ ~{threads} ~{bamAlignment}
+
+    ## run PEPPER-Margin-DeepVariant
+    run_pepper_margin_deepvariant call_variant -b ~{bamAlignment} -f $REF -o `pwd` -t ~{threads} ~{pepperMode} -p PMDV_FINAL
   >>>
 
   output {
