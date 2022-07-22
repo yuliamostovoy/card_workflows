@@ -6,3 +6,13 @@ workflows:
    -  name: structuralVariantsDenovoAssembly
       subclass: WDL
       primaryDescriptorPath: /wdl/workflows/structural_variants_denovo_assembly.wdl
+   -  name: evaluateSVsWithTTMars
+      subclass: WDL
+      description: Evaluate structural variants against truth assemblies using TT-Mars (https://github.com/ChaissonLab/TT-Mars)
+      primaryDescriptorPath: /wdl/workflows/evaluate_sv_ttmars.wdl
+      branches:
+        - ttmars
+      authors:
+        - name: Jean Monlong
+          email: jmonlong@ucsc.edu
+
