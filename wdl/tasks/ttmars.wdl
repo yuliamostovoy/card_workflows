@@ -86,7 +86,7 @@ task liftover_t {
 	  Int memSizeGb = 8
   }
 
-  Int disk_size = round(10*(size(hap1_lra_file, 'G') + size(hap2_lra_file, 'G'))) + 30
+  Int disk_size = round(30*(size(hap1_lra_file, 'G') + size(hap2_lra_file, 'G'))) + 30
   
   command <<<
     set -o pipefail
@@ -98,21 +98,21 @@ task liftover_t {
 
     samtools index ~{hap1_lra_file}
     samtools index ~{hap2_lra_file}
-    
-    samtools view -h -O sam -o liftover_output/assem1_nool_sort.sam ~{hap1_lra_file}
-    samtools view -h -O sam -o liftover_output/assem2_nool_sort.sam ~{hap2_lra_file}
-
+        
     #liftover using samLiftover (https://github.com/mchaisso/mcutils): ref to asm lo
     python /build/TT-Mars/lo_assem_to_ref.py liftover_output ~{hap1_lra_file} ~{hap2_lra_file}
-
-    samLiftover liftover_output/assem1_nool_sort.sam liftover_output/lo_pos_assem1.bed liftover_output/lo_pos_assem1_result.bed --dir 1
-    samLiftover liftover_output/assem2_nool_sort.sam liftover_output/lo_pos_assem2.bed liftover_output/lo_pos_assem2_result.bed --dir 1
-
     #liftover using samLiftover (https://github.com/mchaisso/mcutils): asm to ref lo
     python /build/TT-Mars/lo_assem_to_ref_0.py liftover_output ~{hap1_lra_file} ~{hap2_lra_file}
 
+    samtools view -h -O sam -o liftover_output/assem1_nool_sort.sam ~{hap1_lra_file}
+    samLiftover liftover_output/assem1_nool_sort.sam liftover_output/lo_pos_assem1.bed liftover_output/lo_pos_assem1_result.bed --dir 1
     samLiftover liftover_output/assem1_nool_sort.sam liftover_output/lo_pos_assem1_0.bed liftover_output/lo_pos_assem1_0_result.bed --dir 0
-    samLiftover liftover_output/assem2_nool_sort.sam liftover_output/lo_pos_assem2_0.bed liftover_output/lo_pos_assem2_0_result.bed --dir 0    
+    rm -f liftover_output/assem1_nool_sort.sam
+    
+    samtools view -h -O sam -o liftover_output/assem2_nool_sort.sam ~{hap2_lra_file}
+    samLiftover liftover_output/assem2_nool_sort.sam liftover_output/lo_pos_assem2.bed liftover_output/lo_pos_assem2_result.bed --dir 1
+    samLiftover liftover_output/assem2_nool_sort.sam liftover_output/lo_pos_assem2_0.bed liftover_output/lo_pos_assem2_0_result.bed --dir 0
+    rm -f liftover_output/assem2_nool_sort.sam
 
     python /build/TT-Mars/compress_liftover.py liftover_output lo_pos_assem1_result.bed lo_pos_assem1_result_compressed.bed
     python /build/TT-Mars/compress_liftover.py liftover_output lo_pos_assem2_result.bed lo_pos_assem2_result_compressed.bed
@@ -145,7 +145,7 @@ task lra_t {
       File reference_file
       File hap_file
 	  Int memSizeGb = 16
-      Int threads=16
+      Int threads=64
   }
 
   Int disk_size = round(5*(size(reference_file, 'G') + size(hap_file, 'G'))) + 30
