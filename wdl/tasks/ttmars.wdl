@@ -16,6 +16,7 @@ task ttmars_t {
       File lo_pos_assem1_0_file
       File lo_pos_assem2_0_file
       Int nb_x_chr=2
+      Boolean seq_names_has_chr_prefix = true
 	  Int memSizeGb = 8
   }
 
@@ -61,7 +62,7 @@ task ttmars_t {
            ~{lo_pos_assem1_0_file} \
            ~{lo_pos_assem2_0_file} \
            ~{trf_file} \
-           -s
+           -s ~{true="" false="--not_hg38" seq_names_has_chr_prefix}
        
     python /build/TT-Mars/combine.py output_files ~{nb_x_chr}
   >>>
