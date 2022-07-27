@@ -144,8 +144,8 @@ task lra_t {
   input {
       File reference_file
       File hap_file
-	  Int memSizeGb = 16
-      Int threads=64
+	  Int memSizeGb = 64
+      Int threads=16
   }
 
   Int disk_size = round(5*(size(reference_file, 'G') + size(hap_file, 'G'))) + 30
