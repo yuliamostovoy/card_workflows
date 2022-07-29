@@ -70,7 +70,7 @@ task ttmars_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:1be8962a8948d290e2322c6ac0ce226ad6be41b4321f6e2c318836969aedf3e4"
+    docker: "quay.io/jmonlong/ttmars@sha256:5e337a31229ff6c6058ea66eca5114058a7be3bedf413d907cb3bd789757db88"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
@@ -131,7 +131,7 @@ task liftover_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:1be8962a8948d290e2322c6ac0ce226ad6be41b4321f6e2c318836969aedf3e4"
+    docker: "quay.io/jmonlong/ttmars@sha256:5e337a31229ff6c6058ea66eca5114058a7be3bedf413d907cb3bd789757db88"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
@@ -187,7 +187,7 @@ task lra_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:1be8962a8948d290e2322c6ac0ce226ad6be41b4321f6e2c318836969aedf3e4"
+    docker: "quay.io/jmonlong/ttmars@sha256:5e337a31229ff6c6058ea66eca5114058a7be3bedf413d907cb3bd789757db88"
     cpu: threads
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
