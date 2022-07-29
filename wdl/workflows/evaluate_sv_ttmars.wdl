@@ -17,7 +17,6 @@ workflow evaluateSVsWithTTMars {
         centromereFile: "centromere location of the reference (see https://github.com/ChaissonLab/TT-Mars/blob/main/centromere_hg38.txt)"
         threads: "how many threads to use for the LRA alignment (when lifting over is needed)"
         nbXchr: "basically specify if sample is male (nbXchr=1) or female (nbXchr=2)"
-        seqNamesHasChrPrefix: "sequence names have a 'chr' prefix? E.g. true for GRCh38, false for hg19"
         nonCovReg1File: "lift-over coverage of haplotype 1 on the reference. Provided at https://github.com/ChaissonLab/TT-Mars or made by liftover.sh"
         nonCovReg2File: "lift-over coverage of haplotype 2 on the reference. Provided at https://github.com/ChaissonLab/TT-Mars or made by liftover.sh"
         loPosAssem1File: "lift-over information of reference on haplotype 1. Provided at https://github.com/ChaissonLab/TT-Mars or made by liftover.sh"
@@ -35,7 +34,6 @@ workflow evaluateSVsWithTTMars {
         File centromereFile
         Int threads=16
         Int nbXchr=2
-        Boolean seqNamesHasChrPrefix = true
         File? nonCovReg1File
         File? nonCovReg2File
         File? loPosAssem1File
@@ -89,8 +87,7 @@ workflow evaluateSVsWithTTMars {
         lo_pos_assem2_file=lo_pos_assem2_file,
         lo_pos_assem1_0_file=lo_pos_assem1_0_file,
         lo_pos_assem2_0_file=lo_pos_assem2_0_file,
-        nb_x_chr=nbXchr,
-        seq_names_has_chr_prefix=seqNamesHasChrPrefix
+        nb_x_chr=nbXchr
     }
 
     output {

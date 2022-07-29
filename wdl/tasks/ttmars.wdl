@@ -16,7 +16,6 @@ task ttmars_t {
       File lo_pos_assem1_0_file
       File lo_pos_assem2_0_file
       Int nb_x_chr=2
-      Boolean seq_names_has_chr_prefix = true
 	  Int memSizeGb = 8
   }
 
@@ -61,8 +60,7 @@ task ttmars_t {
            ~{lo_pos_assem2_file} \
            ~{lo_pos_assem1_0_file} \
            ~{lo_pos_assem2_0_file} \
-           ~{trf_file} \
-           -s ~{true="" false="--not_hg38" seq_names_has_chr_prefix}
+           ~{trf_file}
        
     python /build/TT-Mars/combine.py output_files ~{nb_x_chr}
   >>>
@@ -72,7 +70,7 @@ task ttmars_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:57bba0cb8c45acb840b1daf3ada9f2141ae8ab55e7c4aadd58403d3defeba6e6"
+    docker: "quay.io/jmonlong/ttmars@sha256:1be8962a8948d290e2322c6ac0ce226ad6be41b4321f6e2c318836969aedf3e4"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
@@ -120,7 +118,7 @@ task liftover_t {
     python /build/TT-Mars/compress_liftover.py liftover_output lo_pos_assem1_0_result.bed lo_pos_assem1_0_result_compressed.bed
     python /build/TT-Mars/compress_liftover.py liftover_output lo_pos_assem2_0_result.bed lo_pos_assem2_0_result_compressed.bed
 
-    python /build/TT-Mars-tweaked/get_conf_int.py liftover_output ~{hap1_lra_file}  ~{hap2_lra_file}
+    python /build/TT-Mars/get_conf_int.py liftover_output ~{hap1_lra_file} ~{hap2_lra_file}
   >>>
 
   output {
@@ -133,7 +131,7 @@ task liftover_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:57bba0cb8c45acb840b1daf3ada9f2141ae8ab55e7c4aadd58403d3defeba6e6"
+    docker: "quay.io/jmonlong/ttmars@sha256:1be8962a8948d290e2322c6ac0ce226ad6be41b4321f6e2c318836969aedf3e4"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
@@ -180,7 +178,7 @@ task lra_t {
     samtools index output_files/assem_sort.bam
 
     #trim overlapping contigs
-    python /build/TT-Mars-tweaked/trim_overlapping_contigs.py output_files/assem_sort.bam output_files
+    python /build/TT-Mars/trim_overlapping_contigs.py output_files/assem_sort.bam output_files
     samtools sort output_files/assem_sort_nool.bam -o output_files/assem_nool_sort.bam
   >>>
 
@@ -189,7 +187,7 @@ task lra_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:57bba0cb8c45acb840b1daf3ada9f2141ae8ab55e7c4aadd58403d3defeba6e6"
+    docker: "quay.io/jmonlong/ttmars@sha256:1be8962a8948d290e2322c6ac0ce226ad6be41b4321f6e2c318836969aedf3e4"
     cpu: threads
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
