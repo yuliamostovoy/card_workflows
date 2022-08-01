@@ -72,26 +72,33 @@ workflow evaluateSVsWithTTMars {
     File lo_pos_assem1_0_file = select_first([loPosAssem10File, liftover_t.lo_pos_assem1_0_file])
     File lo_pos_assem2_0_file = select_first([loPosAssem20File, liftover_t.lo_pos_assem2_0_file])
 
-    ## call TT-Mars
-    call ttmars_t.ttmars_t {
-        input:
-        reference_file=referenceFile,
-        svs_file=svsFile,
-        hap1_file=hap1File,
-        hap2_file=hap2File,
-        centromere_file=centromereFile,
-        trf_file=trfFile,
-        non_cov_reg_1_file=non_cov_reg_1_file,
-        non_cov_reg_2_file=non_cov_reg_2_file,
-        lo_pos_assem1_file=lo_pos_assem1_file,
-        lo_pos_assem2_file=lo_pos_assem2_file,
-        lo_pos_assem1_0_file=lo_pos_assem1_0_file,
-        lo_pos_assem2_0_file=lo_pos_assem2_0_file,
-        nb_x_chr=nbXchr
+    Array[String] chroms = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y']
+
+    ## call TT-Mars on each chromosome
+    scatter(chrom in chroms){
+        call ttmars_t.ttmars_t {
+            input:
+            reference_file=referenceFile,
+            svs_file=svsFile,
+            hap1_file=hap1File,
+            hap2_file=hap2File,
+            centromere_file=centromereFile,
+            trf_file=trfFile,
+            non_cov_reg_1_file=non_cov_reg_1_file,
+            non_cov_reg_2_file=non_cov_reg_2_file,
+            lo_pos_assem1_file=lo_pos_assem1_file,
+            lo_pos_assem2_file=lo_pos_assem2_file,
+            lo_pos_assem1_0_file=lo_pos_assem1_0_file,
+            lo_pos_assem2_0_file=lo_pos_assem2_0_file,
+            nb_x_chr=nbXchr,
+            in_chrom=chrom
+        }
     }
 
+    call ttmars_t.combine_ttmars_t {input: tsvs=ttmars_t.tsvOutput}
+    
     output {
-        File tsvOutput = ttmars_t.tsvOutput
+        File tsvOutput = combine_ttmars_t.tsvOutput
         File? liftoverNonCovReg1File = liftover_t.non_cov_reg_1_file
         File? liftoverNonCovReg2File = liftover_t.non_cov_reg_2_file
         File? liftoverLoPosAssem1File = liftover_t.lo_pos_assem1_file

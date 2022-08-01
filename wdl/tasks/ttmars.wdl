@@ -1,5 +1,34 @@
 version 1.0
 
+## combine the results of the chr-split runs of TT-Mars
+task combine_ttmars_t {
+  input {
+      Array[File] tsvs
+  }
+
+  Int disk_size = round(5*(size(tsvs, 'G'))) + 30
+
+  command <<<
+    set -o pipefail
+    set -e
+    set -u
+    set -o xtrace
+
+    cat ~{sep=" " tsvs} | gzip > ttmars_combined_res.txt.gz
+  >>>
+
+  output {
+	File tsvOutput = "ttmars_combined_res.txt.gz"
+  }
+
+  runtime {
+    docker: "quay.io/jmonlong/ttmars@sha256:16fa1980cfe90eeb255746c3ecfb6b03f045e146d1d0bfd3a518f138d11a58a2"
+    cpu: 1
+	memory: "8 GB"
+	disks: "local-disk " + disk_size + " SSD"
+  }
+}
+
 ## run TT-Mars
 task ttmars_t {
   input {
@@ -16,10 +45,13 @@ task ttmars_t {
       File lo_pos_assem1_0_file
       File lo_pos_assem2_0_file
       Int nb_x_chr=2
-	  Int memSizeGb = 8
+	  Int memSizeGb = 16
+      String? in_chrom
   }
 
   Int disk_size = round(5*(size(reference_file, 'G') + 2*size(hap1_file, 'G') + 2*size(non_cov_reg_1_file, 'G') + 4*size(lo_pos_assem1_file, 'G'))) + 30
+
+  String chrom_args = if defined(in_chrom) then "-c " + in_chrom else ""
   
   command <<<
     set -o pipefail
@@ -60,7 +92,7 @@ task ttmars_t {
            ~{lo_pos_assem2_file} \
            ~{lo_pos_assem1_0_file} \
            ~{lo_pos_assem2_0_file} \
-           ~{trf_file}
+           ~{trf_file} -s ~{chrom_args}
        
     python /build/TT-Mars/combine.py output_files ~{nb_x_chr}
   >>>
@@ -70,7 +102,7 @@ task ttmars_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:5e337a31229ff6c6058ea66eca5114058a7be3bedf413d907cb3bd789757db88"
+    docker: "quay.io/jmonlong/ttmars@sha256:16fa1980cfe90eeb255746c3ecfb6b03f045e146d1d0bfd3a518f138d11a58a2"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
@@ -123,7 +155,7 @@ task liftover_t {
 
   output {
 	  File non_cov_reg_1_file = "liftover_output/assem1_non_cov_regions.bed"
-      File non_cov_reg_2_file = "liftover_output/assem1_non_cov_regions.bed"
+      File non_cov_reg_2_file = "liftover_output/assem2_non_cov_regions.bed"
       File lo_pos_assem1_file = "liftover_output/lo_pos_assem1_result_compressed.bed"
       File lo_pos_assem2_file = "liftover_output/lo_pos_assem2_result_compressed.bed"
       File lo_pos_assem1_0_file = "liftover_output/lo_pos_assem1_0_result_compressed.bed"
@@ -131,7 +163,7 @@ task liftover_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:5e337a31229ff6c6058ea66eca5114058a7be3bedf413d907cb3bd789757db88"
+    docker: "quay.io/jmonlong/ttmars@sha256:16fa1980cfe90eeb255746c3ecfb6b03f045e146d1d0bfd3a518f138d11a58a2"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
@@ -187,7 +219,7 @@ task lra_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:5e337a31229ff6c6058ea66eca5114058a7be3bedf413d907cb3bd789757db88"
+    docker: "quay.io/jmonlong/ttmars@sha256:16fa1980cfe90eeb255746c3ecfb6b03f045e146d1d0bfd3a518f138d11a58a2"
     cpu: threads
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
