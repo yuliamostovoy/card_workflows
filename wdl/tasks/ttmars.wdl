@@ -45,7 +45,7 @@ task ttmars_t {
       File lo_pos_assem1_0_file
       File lo_pos_assem2_0_file
       Int nb_x_chr=2
-	  Int memSizeGb = 16
+	  Int memSizeGb = 32
       String? in_chrom
   }
 
@@ -80,6 +80,12 @@ task ttmars_t {
         HAP2=hap2.fa
     fi
 
+    ## index vcf if ending with gz
+    if [[ ~{svs_file} == *gz ]]
+    then
+        bcftools index ~{svs_file}
+    fi
+    
     mkdir output_files
     
     python /build/TT-Mars/ttmars.py output_files \
@@ -102,7 +108,7 @@ task ttmars_t {
   }
 
   runtime {
-    docker: "quay.io/jmonlong/ttmars@sha256:16fa1980cfe90eeb255746c3ecfb6b03f045e146d1d0bfd3a518f138d11a58a2"
+    docker: "quay.io/jmonlong/ttmars@sha256:5eb6ecfa95ac7f960459364afdcd02fa1df5b59a31990758adb15ac30f3a16ae"
     cpu: 1
 	memory: memSizeGb + " GB"
 	disks: "local-disk " + disk_size + " SSD"
