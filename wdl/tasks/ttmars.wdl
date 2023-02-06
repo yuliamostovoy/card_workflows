@@ -45,7 +45,7 @@ task ttmars_t {
       File lo_pos_assem1_0_file
       File lo_pos_assem2_0_file
       Int nb_x_chr=2
-	  Int memSizeGb = 32
+      Int memSizeGb = 32
       String? in_chrom
       String? arguments
   }
@@ -100,7 +100,7 @@ task ttmars_t {
            ~{lo_pos_assem1_0_file} \
            ~{lo_pos_assem2_0_file} \
            ~{trf_file} -s ~{chrom_args} \
-	   ~{arguments}
+           ~{arguments}
        
   >>>
 
@@ -111,8 +111,8 @@ task ttmars_t {
   runtime {
     docker: "quay.io/jmonlong/ttmars@sha256:5eb6ecfa95ac7f960459364afdcd02fa1df5b59a31990758adb15ac30f3a16ae"
     cpu: 1
-	memory: memSizeGb + " GB"
-	disks: "local-disk " + disk_size + " SSD"
+    memory: memSizeGb + " GB"
+    disks: "local-disk " + disk_size + " SSD"
   }
 }
 
@@ -121,7 +121,7 @@ task liftover_t {
   input {
       File hap1_lra_file
       File hap2_lra_file
-	  Int memSizeGb = 8
+      Int memSizeGb = 8
   }
 
   Int disk_size = round(30*(size(hap1_lra_file, 'G') + size(hap2_lra_file, 'G'))) + 30
@@ -161,7 +161,7 @@ task liftover_t {
   >>>
 
   output {
-	  File non_cov_reg_1_file = "liftover_output/assem1_non_cov_regions.bed"
+      File non_cov_reg_1_file = "liftover_output/assem1_non_cov_regions.bed"
       File non_cov_reg_2_file = "liftover_output/assem2_non_cov_regions.bed"
       File lo_pos_assem1_file = "liftover_output/lo_pos_assem1_result_compressed.bed"
       File lo_pos_assem2_file = "liftover_output/lo_pos_assem2_result_compressed.bed"
@@ -172,8 +172,8 @@ task liftover_t {
   runtime {
     docker: "quay.io/jmonlong/ttmars@sha256:5eb6ecfa95ac7f960459364afdcd02fa1df5b59a31990758adb15ac30f3a16ae"
     cpu: 1
-	memory: memSizeGb + " GB"
-	disks: "local-disk " + disk_size + " SSD"
+    memory: memSizeGb + " GB"
+    disks: "local-disk " + disk_size + " SSD"
   }
 }
 
@@ -182,7 +182,7 @@ task lra_t {
   input {
       File reference_file
       File hap_file
-	  Int memSizeGb = 64
+      Int memSizeGb = 64
       Int threads=16
   }
 
@@ -228,7 +228,7 @@ task lra_t {
   runtime {
     docker: "quay.io/jmonlong/ttmars@sha256:5eb6ecfa95ac7f960459364afdcd02fa1df5b59a31990758adb15ac30f3a16ae"
     cpu: threads
-	memory: memSizeGb + " GB"
-	disks: "local-disk " + disk_size + " SSD"
+    memory: memSizeGb + " GB"
+    disks: "local-disk " + disk_size + " SSD"
   }
 }
