@@ -18,14 +18,14 @@ task combine_ttmars_t {
   >>>
 
   output {
-	File tsvOutput = "ttmars_combined_res.txt.gz"
+       File tsvOutput = "ttmars_combined_res.txt.gz"
   }
 
   runtime {
     docker: "quay.io/jmonlong/ttmars@sha256:5eb6ecfa95ac7f960459364afdcd02fa1df5b59a31990758adb15ac30f3a16ae"
     cpu: 1
-	memory: "8 GB"
-	disks: "local-disk " + disk_size + " SSD"
+    memory: "8 GB"
+    disks: "local-disk " + disk_size + " SSD"
   }
 }
 
@@ -101,13 +101,13 @@ task ttmars_t {
            ~{lo_pos_assem2_0_file} \
            ~{trf_file} -s ~{chrom_args} \
            ~{arguments}
-	   
+
     python /build/TT-Mars/combine.py output_files ~{nb_x_chr} 
        
   >>>
 
   output {
-	File tsvOutput = "output_files/ttmars_combined_res.txt"
+    File tsvOutput = "output_files/ttmars_combined_res.txt"
   }
 
   runtime {
@@ -224,7 +224,7 @@ task lra_t {
   >>>
 
   output {
-	File bamOutput = "output_files/assem_nool_sort.bam"
+    File bamOutput = "output_files/assem_nool_sort.bam"
   }
 
   runtime {
