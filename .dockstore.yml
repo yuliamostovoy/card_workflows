@@ -1,11 +1,5 @@
 version: 1.2
 workflows:
-   -  name: smallVariantsReferenceBased
-      subclass: WDL
-      primaryDescriptorPath: /wdl/workflows/small_variant_reference_based.wdl
-   -  name: structuralVariantsDenovoAssembly
-      subclass: WDL
-      primaryDescriptorPath: /wdl/workflows/structural_variants_denovo_assembly.wdl
    -  name: evaluateSVsWithTTMars
       subclass: WDL
       description: Evaluate structural variants against truth assemblies using TT-Mars (https://github.com/ChaissonLab/TT-Mars)
