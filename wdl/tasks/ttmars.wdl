@@ -101,6 +101,8 @@ task ttmars_t {
            ~{lo_pos_assem2_0_file} \
            ~{trf_file} -s ~{chrom_args} \
            ~{arguments}
+	   
+    python /build/TT-Mars/combine.py output_files ~{nb_x_chr} 
        
   >>>
 
