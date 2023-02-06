@@ -23,6 +23,7 @@ workflow evaluateSVsWithTTMars {
         loPosAssem2File: "lift-over information of reference on haplotype 2. Provided at https://github.com/ChaissonLab/TT-Mars or made by liftover.sh"
         loPosAssem10File: "lift-over information of haplotype 1 on the reference. Provided at https://github.com/ChaissonLab/TT-Mars or made by liftover.sh"
         loPosAssem20File: "lift-over information of haplotype 2 on the reference. Provided at https://github.com/ChaissonLab/TT-Mars or made by liftover.sh"
+        arguments: "optional additional arguments accepted by tt-mars, e.g. '-v -g -p -s'
     }
 
     input {
@@ -40,6 +41,7 @@ workflow evaluateSVsWithTTMars {
         File? loPosAssem2File
         File? loPosAssem10File
         File? loPosAssem20File
+        String? arguments
     }
 
     ## if any of those input files are missing, the assemblies have to be lifted to the reference sequence
@@ -91,7 +93,8 @@ workflow evaluateSVsWithTTMars {
             lo_pos_assem1_0_file=lo_pos_assem1_0_file,
             lo_pos_assem2_0_file=lo_pos_assem2_0_file,
             nb_x_chr=nbXchr,
-            in_chrom=chrom
+            in_chrom=chrom,
+            arguments=arguments
         }
     }
 
