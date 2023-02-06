@@ -47,6 +47,7 @@ task ttmars_t {
       Int nb_x_chr=2
 	  Int memSizeGb = 32
       String? in_chrom
+      String? arguments
   }
 
   Int disk_size = round(5*(size(reference_file, 'G') + 2*size(hap1_file, 'G') + 2*size(non_cov_reg_1_file, 'G') + 4*size(lo_pos_assem1_file, 'G'))) + 30
@@ -98,9 +99,9 @@ task ttmars_t {
            ~{lo_pos_assem2_file} \
            ~{lo_pos_assem1_0_file} \
            ~{lo_pos_assem2_0_file} \
-           ~{trf_file} -s ~{chrom_args}
+           ~{trf_file} -s ~{chrom_args} \
+	   ~{arguments}
        
-    python /build/TT-Mars/combine.py output_files ~{nb_x_chr}
   >>>
 
   output {
